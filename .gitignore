@@ -1,12 +1,14 @@
-# node
-frontend/node_modules
-frontend/dist
+# Node
+node_modules/
+dist/
 
-# java
-backend/target
-backend/.idea
-backend/*.iml
+# Java
+target/
+*.log
+
+# IDEA
+.idea/
+*.iml
 
 # OS
 .DS_Store
-Thumbs.db
