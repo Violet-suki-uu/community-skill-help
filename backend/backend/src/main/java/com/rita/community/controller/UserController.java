@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * UserController
+ * 作用：用户控制器，提供当前登录用户信息接口。
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -49,7 +53,6 @@ public class UserController {
         return Result.ok(resp);
     }
 
-    // 简单响应类（不把 password 返回给前端）
     public static class UserMeResp {
         private Long id;
         private String phone;
@@ -73,3 +76,4 @@ public class UserController {
         public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
     }
 }
+

@@ -4,6 +4,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * WebConfig
+ * 作用：MVC 配置类，注册拦截器并配置哪些路径需要登录。
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -11,9 +15,11 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtAuthInterceptor())
                 .addPathPatterns("/api/**")
-                // ✅ 放行登录注册
                 .excludePathPatterns("/api/auth/**")
-                // ✅ 放行测试接口
+                .excludePathPatterns("/api/skills", "/api/skills/**")
+                .excludePathPatterns("/api/recommend", "/api/recommend/**")
+                .excludePathPatterns("/api/upload/**")
                 .excludePathPatterns("/test/**", "/ping");
     }
 }
+

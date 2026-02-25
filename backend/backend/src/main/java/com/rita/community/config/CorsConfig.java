@@ -8,6 +8,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * CorsConfig
+ * 作用：跨域配置类，允许前端开发服务器访问后端接口。
+ */
 @Configuration
 public class CorsConfig {
 
@@ -15,19 +19,14 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
 
-        // 允许的前端地址
         cfg.setAllowedOrigins(List.of("http://localhost:5173"));
 
-        // 允许的方法（包含 OPTIONS 预检）
-        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
-        // 允许所有请求头
         cfg.setAllowedHeaders(List.of("*"));
 
-        // 如果你以后要带 cookie/authorization，这个建议开
         cfg.setAllowCredentials(true);
 
-        // 暴露响应头（可选）
         cfg.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -35,3 +34,4 @@ public class CorsConfig {
         return source;
     }
 }
+

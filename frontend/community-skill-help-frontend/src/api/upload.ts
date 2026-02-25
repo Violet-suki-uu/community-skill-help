@@ -1,3 +1,6 @@
+/**
+ * 模块说明：上传 API 模块。作用：封装图片上传请求。
+ */
 import http from "./http";
 
 export function uploadImageApi(file: File) {
@@ -7,3 +10,4 @@ export function uploadImageApi(file: File) {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
+

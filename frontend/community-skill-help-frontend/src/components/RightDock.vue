@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="dock">
     <div class="item" :class="{ active: active === 'add' }" @click="$emit('go-add')">
       <div class="circle">
@@ -7,11 +7,11 @@
       <div class="label">发布</div>
     </div>
 
-    <div class="item" :class="{ active: active === 'manage' }" @click="$emit('go-list')">
+    <div class="item" :class="{ active: active === 'chat' }" @click="$emit('go-chat')">
       <div class="circle">
-        <span class="icon">#</span>
+        <span class="icon">M</span>
       </div>
-      <div class="label">我的</div>
+      <div class="label">消息</div>
     </div>
 
     <div class="item" :class="{ active: active === 'home' }" @click="$emit('go-home')">
@@ -24,8 +24,9 @@
 </template>
 
 <script setup lang="ts">
+// 组件说明：右侧快捷导航组件。作用：在主要页面间快速跳转。
 defineProps<{ active?: string }>();
-defineEmits(["go-add", "go-home", "go-list"]);
+defineEmits(["go-add", "go-home", "go-chat"]);
 </script>
 
 <style scoped>
@@ -104,3 +105,4 @@ defineEmits(["go-add", "go-home", "go-list"]);
   font-weight: 600;
 }
 </style>
+

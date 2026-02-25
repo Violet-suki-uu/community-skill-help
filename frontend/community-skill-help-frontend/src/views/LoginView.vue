@@ -55,12 +55,10 @@ async function onLogin() {
   loading.value = true;
   try {
     const res = await loginApi(form);
-    // 后端返回：{ code, message, data }
     if (res.data.code === 0) {
       store.setToken(res.data.data);
       ElMessage.success("登录成功");
 
-      // ✅ 登录成功，跳转首页
       router.push("/home");
     } else {
       ElMessage.error(res.data.message || "登录失败");
@@ -89,3 +87,4 @@ async function onLogin() {
   margin: 0 0 18px 0;
 }
 </style>
+

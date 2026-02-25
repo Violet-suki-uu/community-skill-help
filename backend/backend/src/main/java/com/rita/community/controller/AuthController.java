@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
         value = "/api/auth",
         produces = "application/json"
 )
+/**
+ * AuthController
+ * 作用：认证控制器，提供注册与登录接口。
+ */
 public class AuthController {
 
     private final AuthService authService;
@@ -26,8 +30,12 @@ public class AuthController {
             produces = "application/json"
     )
     public Result<Void> register(@RequestBody RegisterReq req) {
-        authService.register(req);
-        return Result.ok(null);
+        try {
+            authService.register(req);
+            return Result.ok(null);
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
     }
 
     @PostMapping(
@@ -36,6 +44,11 @@ public class AuthController {
             produces = "application/json"
     )
     public Result<String> login(@RequestBody LoginReq req) {
-        return Result.ok(authService.login(req));
+        try {
+            return Result.ok(authService.login(req));
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
     }
 }
+

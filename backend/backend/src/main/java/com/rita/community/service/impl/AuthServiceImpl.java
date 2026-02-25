@@ -10,6 +10,10 @@ import com.rita.community.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * AuthServiceImpl
+ * 作用：认证业务实现，处理账号注册、密码校验和令牌签发。
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -23,14 +27,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(RegisterReq req) {
-        // 1) 手机号是否已存在
         Long cnt = userMapper.selectCount(new LambdaQueryWrapper<User>()
                 .eq(User::getPhone, req.getPhone()));
         if (cnt != null && cnt > 0) {
             throw new RuntimeException("手机号已注册");
         }
 
-        // 2) 入库（密码BCrypt）
         User u = new User();
         u.setPhone(req.getPhone());
         u.setPassword(passwordEncoder.encode(req.getPassword()));

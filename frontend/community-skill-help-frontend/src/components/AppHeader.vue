@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+// 组件说明：页面头部组件。作用：提供搜索、登录入口和导航操作。
 import { ref, computed } from "vue";
 import { useAuthStore } from "../store/auth";
 
@@ -52,3 +53,4 @@ const token = computed(() => auth.token);
 .right { display: flex; align-items: center; gap: 12px; }
 .user { cursor: pointer; font-weight: 600; }
 </style>
+

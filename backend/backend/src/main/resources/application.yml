@@ -1,9 +1,19 @@
+# 模块说明：后端主配置文件，集中管理端口、数据库、上传、日志等运行参数。
 server:
-  port: 8080
+  port: 8081
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/chat_tables.sql
   datasource:
     url: jdbc:mysql://localhost:3306/community?useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: Lzh.102033
     driver-class-name: com.mysql.cj.jdbc.Driver
+

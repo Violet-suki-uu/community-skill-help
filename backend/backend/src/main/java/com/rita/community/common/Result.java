@@ -2,6 +2,10 @@ package com.rita.community.common;
 
 import lombok.Data;
 
+/**
+ * Result
+ * 作用：统一响应包装对象，让前后端用一致的数据结构传递成功或失败结果。
+ */
 @Data
 public class Result<T> {
     private int code; // 0 成功，其他失败
@@ -24,3 +28,4 @@ public class Result<T> {
         return r;
     }
 }
+

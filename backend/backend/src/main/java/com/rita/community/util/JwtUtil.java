@@ -8,9 +8,12 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/**
+ * JwtUtil
+ * 作用：JWT 工具类，生成与解析令牌，提取用户身份信息。
+ */
 public class JwtUtil {
 
-    // 先写死，后面可以挪到 application.yml
     private static final String SECRET = "replace-this-with-a-long-secret-key-32bytes+";
     private static final long EXPIRE_MS = 7L * 24 * 60 * 60 * 1000; // 7天
 
@@ -35,8 +38,8 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // 从 token 里取 userId
     public static Long getUserId(String token) {
         return Long.valueOf(parse(token).getSubject());
     }
 }
+

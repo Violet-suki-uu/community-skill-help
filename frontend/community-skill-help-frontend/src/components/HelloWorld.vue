@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// 组件说明：示例组件。作用：用于保留模板演示能力。
 import { ref } from 'vue'
 
 defineProps<{ msg: string }>()
@@ -39,3 +40,4 @@ const count = ref(0)
   color: #888;
 }
 </style>
+

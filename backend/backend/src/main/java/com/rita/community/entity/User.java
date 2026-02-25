@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 
+/**
+ * User
+ * 作用：数据库实体，与数据表字段一一映射，供 ORM 持久化使用。
+ */
 @TableName("user")
 public class User {
 
@@ -26,7 +30,6 @@ public class User {
     @TableField("updated_at")
     private LocalDateTime updatedAt;
 
-    // 先别用 Lombok，手写 getter/setter（确保 IDEA 运行一定没坑）
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -51,3 +54,4 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
+

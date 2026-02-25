@@ -111,6 +111,7 @@
 </template>
 
 <script setup lang="ts">
+// 组件说明：登录注册弹窗组件。作用：统一处理账号认证交互。
 import { ref, reactive, watch, computed } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
