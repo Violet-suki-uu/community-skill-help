@@ -4,7 +4,7 @@ import com.rita.community.common.Result;
 import com.rita.community.dto.LoginReq;
 import com.rita.community.dto.RegisterReq;
 import com.rita.community.service.AuthService;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 )
 /**
  * AuthController
- * 作用：认证控制器，提供注册与登录接口。
+ * 作用：认证控制器，提供注册、登录、登出接口。
  */
 public class AuthController {
 
@@ -50,5 +50,13 @@ public class AuthController {
             return Result.fail(e.getMessage());
         }
     }
-}
 
+    @PostMapping(value = "/logout", produces = "application/json")
+    public Result<Void> logout(HttpServletRequest request) {
+        String auth = request.getHeader("Authorization");
+        if (auth != null && auth.startsWith("Bearer ")) {
+            authService.logout(auth.substring(7).trim());
+        }
+        return Result.ok(null);
+    }
+}

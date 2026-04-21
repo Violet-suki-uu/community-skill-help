@@ -1,15 +1,24 @@
 package com.rita.community.config;
 
+import com.rita.community.service.CacheService;
 import com.rita.community.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * JwtAuthInterceptor
- * 作用：JWT 登录拦截器，在进入业务接口前校验令牌并拦截未登录请求。
+ * 作用：JWT 登录拦截器，在进入业务接口前校验令牌，并通过 Redis 黑名单实现登出。
  */
+@Component
 public class JwtAuthInterceptor implements HandlerInterceptor {
+
+    private final CacheService cacheService;
+
+    public JwtAuthInterceptor(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -24,22 +33,28 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
         String auth = request.getHeader("Authorization");
         if (auth == null || !auth.startsWith("Bearer ")) {
-            response.setStatus(401);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"code\":401,\"message\":\"Unauthorized\"}");
+            writeUnauthorized(response, "Unauthorized");
             return false;
         }
 
-        String token = auth.substring(7);
+        String token = auth.substring(7).trim();
         try {
             JwtUtil.parse(token);
-            return true;
         } catch (Exception e) {
-            response.setStatus(401);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"code\":401,\"message\":\"Invalid token\"}");
+            writeUnauthorized(response, "Invalid token");
             return false;
         }
+
+        if (cacheService.isTokenBlacklisted(token)) {
+            writeUnauthorized(response, "Token has been revoked");
+            return false;
+        }
+        return true;
+    }
+
+    private void writeUnauthorized(HttpServletResponse response, String message) throws java.io.IOException {
+        response.setStatus(401);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"code\":401,\"message\":\"" + message + "\"}");
     }
 }
-

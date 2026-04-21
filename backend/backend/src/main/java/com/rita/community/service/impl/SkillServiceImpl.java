@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rita.community.entity.Skill;
 import com.rita.community.mapper.SkillMapper;
+import com.rita.community.service.CacheService;
 import com.rita.community.service.SkillService;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +16,17 @@ import java.util.Objects;
 
 /**
  * SkillServiceImpl
- * 作用：技能业务实现，实现技能的增删改查与筛选分页。
+ * 作用：技能业务实现，实现技能的增删改查与筛选分页，并协同 Redis 处理热点缓存与浏览量计数。
  */
 @Service
 public class SkillServiceImpl implements SkillService {
 
     private final SkillMapper skillMapper;
+    private final CacheService cacheService;
 
-    public SkillServiceImpl(SkillMapper skillMapper) {
+    public SkillServiceImpl(SkillMapper skillMapper, CacheService cacheService) {
         this.skillMapper = skillMapper;
+        this.cacheService = cacheService;
     }
 
     @Override
@@ -70,14 +73,18 @@ public class SkillServiceImpl implements SkillService {
         }
 
         found.setStatus(status);
-        return skillMapper.updateById(found) > 0;
+        boolean ok = skillMapper.updateById(found) > 0;
+        if (ok) cacheService.evictSkillDetail(id);
+        return ok;
     }
 
     @Override
     public boolean removeByOwner(Long id, Long userId) {
         LambdaQueryWrapper<Skill> qw = new LambdaQueryWrapper<>();
         qw.eq(Skill::getId, id).eq(Skill::getUserId, userId);
-        return skillMapper.delete(qw) > 0;
+        boolean ok = skillMapper.delete(qw) > 0;
+        if (ok) cacheService.evictSkillDetail(id);
+        return ok;
     }
 
     @Override
@@ -110,7 +117,9 @@ public class SkillServiceImpl implements SkillService {
         found.setAddress(update.getAddress());
         found.setAdcode(update.getAdcode());
         found.setCityName(update.getCityName());
-        return skillMapper.updateById(found) > 0;
+        boolean ok = skillMapper.updateById(found) > 0;
+        if (ok) cacheService.evictSkillDetail(id);
+        return ok;
     }
 
     @Override
@@ -118,12 +127,19 @@ public class SkillServiceImpl implements SkillService {
         return skillMapper.selectById(id);
     }
 
+    /**
+     * 浏览量采用 "Redis 自增 + 每 10 次回写 MySQL" 的懒回写策略，减轻数据库压力。
+     */
     @Override
     public void increaseViewCount(Long id) {
         if (id == null) return;
-        UpdateWrapper<Skill> uw = new UpdateWrapper<>();
-        uw.eq("id", id).setSql("view_count = IFNULL(view_count, 0) + 1");
-        skillMapper.update(null, uw);
+        long current = cacheService.incrSkillView(id);
+        if (current % 10 == 0) {
+            UpdateWrapper<Skill> uw = new UpdateWrapper<>();
+            uw.eq("id", id).setSql("view_count = IFNULL(view_count, 0) + 10");
+            skillMapper.update(null, uw);
+            cacheService.evictSkillDetail(id);
+        }
     }
 
     private boolean sameText(String a, String b) {
@@ -136,4 +152,3 @@ public class SkillServiceImpl implements SkillService {
         return a.compareTo(b) == 0;
     }
 }
-

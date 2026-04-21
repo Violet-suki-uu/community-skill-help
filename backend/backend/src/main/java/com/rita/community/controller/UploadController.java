@@ -3,6 +3,7 @@ package com.rita.community.controller;
 import com.rita.community.common.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,13 +18,16 @@ import java.util.UUID;
 
 /**
  * UploadController
- * 作用：上传控制器，接收图片并保存到服务器本地目录。
+ * 作用：上传控制器，接收图片并保存到服务器本地目录（目录可通过 app.uploads-dir 配置，适配容器挂卷）。
  */
 @RestController
 @RequestMapping("/api/upload")
 public class UploadController {
 
     private static final Logger log = LoggerFactory.getLogger(UploadController.class);
+
+    @Value("${app.uploads-dir:}")
+    private String uploadsDir;
 
     @PostMapping("/image")
     public Result<String> uploadImage(@RequestParam("file") MultipartFile file) {
@@ -39,7 +43,7 @@ public class UploadController {
             }
 
             String filename = UUID.randomUUID() + ext;
-            Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads").toAbsolutePath().normalize();
+            Path uploadDir = resolveUploadDir();
             Files.createDirectories(uploadDir);
 
             Path target = uploadDir.resolve(filename);
@@ -51,5 +55,11 @@ public class UploadController {
             return Result.fail("Upload failed, check server logs");
         }
     }
-}
 
+    private Path resolveUploadDir() {
+        if (uploadsDir != null && !uploadsDir.isBlank()) {
+            return Paths.get(uploadsDir).toAbsolutePath().normalize();
+        }
+        return Paths.get(System.getProperty("user.dir"), "uploads").toAbsolutePath().normalize();
+    }
+}

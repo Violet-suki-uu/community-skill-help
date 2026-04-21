@@ -41,5 +41,18 @@ public class JwtUtil {
     public static Long getUserId(String token) {
         return Long.valueOf(parse(token).getSubject());
     }
+
+    /**
+     * 返回距离过期的剩余毫秒（<=0 表示已过期或解析失败）。
+     */
+    public static long getRemainMs(String token) {
+        try {
+            Date exp = parse(token).getExpiration();
+            if (exp == null) return 0L;
+            return Math.max(0L, exp.getTime() - System.currentTimeMillis());
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
 }
 

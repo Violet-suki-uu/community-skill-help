@@ -1,0 +1,106 @@
+# 一键部署：mysql + redis + backend(Spring Boot) + frontend(Nginx)
+# 使用方法：
+#   1) 复制 .env.example 为 .env，按需修改
+#   2) docker compose up -d --build
+#   3) 访问 http://localhost:${FRONTEND_PORT:-80}
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: csh-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE:      ${MYSQL_DB:-community}
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [appnet]
+
+  redis:
+    image: redis:7-alpine
+    container_name: csh-redis
+    restart: unless-stopped
+    command: >
+      sh -c '
+        if [ -n "$$REDIS_PASSWORD" ]; then
+          redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD"
+        else
+          redis-server --appendonly yes
+        fi
+      '
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
+
+  backend:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    container_name: csh-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SERVER_PORT:     "8081"
+      MYSQL_HOST:      mysql
+      MYSQL_PORT:      "3306"
+      MYSQL_DB:        ${MYSQL_DB:-community}
+      MYSQL_USER:      ${MYSQL_USER:-root}
+      MYSQL_PASSWORD:  ${MYSQL_ROOT_PASSWORD:-root123}
+      REDIS_HOST:      redis
+      REDIS_PORT:      "6379"
+      REDIS_PASSWORD:  ${REDIS_PASSWORD:-}
+      REDIS_DB:        "0"
+      UPLOADS_DIR:     /app/uploads
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseContainerSupport"
+    volumes:
+      - backend_uploads:/app/uploads
+    ports:
+      - "${BACKEND_PORT:-8081}:8081"
+    networks: [appnet]
+
+  frontend:
+    build:
+      context: ./frontend/community-skill-help-frontend
+      dockerfile: Dockerfile
+    container_name: csh-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    networks: [appnet]
+
+volumes:
+  mysql_data:
+  redis_data:
+  backend_uploads:
+
+networks:
+  appnet:
+    driver: bridge

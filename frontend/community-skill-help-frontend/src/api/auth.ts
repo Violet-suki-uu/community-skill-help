@@ -22,3 +22,7 @@ export function registerApi(data: RegisterReq) {
   return http.post("/api/auth/register", data);
 }
 
+export function logoutApi() {
+  return http.post("/api/auth/logout");
+}
+

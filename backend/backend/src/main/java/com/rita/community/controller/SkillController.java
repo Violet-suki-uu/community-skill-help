@@ -12,8 +12,10 @@ import com.rita.community.entity.UserEvent;
 import com.rita.community.entity.User;
 import com.rita.community.mapper.UserEventMapper;
 import com.rita.community.mapper.UserMapper;
+import com.rita.community.service.CacheService;
 import com.rita.community.service.SkillService;
 import com.rita.community.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -41,11 +43,19 @@ public class SkillController {
     private final SkillService skillService;
     private final UserMapper userMapper;
     private final UserEventMapper userEventMapper;
+    private final CacheService cacheService;
 
-    public SkillController(SkillService skillService, UserMapper userMapper, UserEventMapper userEventMapper) {
+    @Value("${app.cache.skill-detail-ttl-seconds:600}")
+    private int skillDetailTtl;
+
+    public SkillController(SkillService skillService,
+                           UserMapper userMapper,
+                           UserEventMapper userEventMapper,
+                           CacheService cacheService) {
         this.skillService = skillService;
         this.userMapper = userMapper;
         this.userEventMapper = userEventMapper;
+        this.cacheService = cacheService;
     }
 
     private Long getCurrentUserId(HttpServletRequest request) {
@@ -101,20 +111,24 @@ public class SkillController {
 
     @GetMapping("/{id}")
     public Result<SkillDetailResp> detail(@PathVariable Long id, HttpServletRequest request) {
-        Skill skill = skillService.getById(id);
-        if (skill == null) {
-            return Result.fail("Skill not found");
-        }
-
+        // 浏览量统计（Redis 自增，满足阈值时懒回写 MySQL）
         skillService.increaseViewCount(id);
-        int newViewCount = (skill.getViewCount() == null ? 0 : skill.getViewCount()) + 1;
-        skill.setViewCount(newViewCount);
 
         Long userId = getOptionalUserId(request);
         if (userId != null) {
             recordUserEvent(userId, "view", id, null);
         }
 
+        SkillDetailResp cached = cacheService.getSkillDetail(id, SkillDetailResp.class);
+        if (cached != null) {
+            cached.setViewCount(combineViewCount(cached.getViewCount(), id));
+            return Result.ok(cached);
+        }
+
+        Skill skill = skillService.getById(id);
+        if (skill == null) {
+            return Result.fail("Skill not found");
+        }
         User seller = userMapper.selectById(skill.getUserId());
 
         SkillDetailResp resp = new SkillDetailResp();
@@ -136,7 +150,20 @@ public class SkillController {
         resp.setViewCount(skill.getViewCount());
         resp.setSellerNickname(seller == null ? "User" : seller.getNickname());
         resp.setSellerCreditScore(seller == null ? 0 : seller.getCreditScore());
+
+        cacheService.putSkillDetail(id, resp, skillDetailTtl);
+        resp.setViewCount(combineViewCount(resp.getViewCount(), id));
         return Result.ok(resp);
+    }
+
+    /**
+     * DB 浏览量是懒回写的，实时值 = DB 基线 + Redis 自增尾数。
+     */
+    private Integer combineViewCount(Integer dbViewCount, Long skillId) {
+        int base = dbViewCount == null ? 0 : dbViewCount;
+        Long pending = cacheService.getSkillView(skillId);
+        if (pending == null) return base;
+        return base + (int) (pending % 10);
     }
 
     @GetMapping("/mine")
