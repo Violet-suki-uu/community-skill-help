@@ -1,5 +1,4 @@
 {
-  // 模块说明：前端应用 TypeScript 编译配置，控制类型检查与构建输入范围。
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
@@ -16,4 +15,3 @@
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/router/index.js"],
   "exclude": ["community-skill-help/frontend/community-skill-help-frontend/**"]
 }
-
