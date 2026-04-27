@@ -1,6 +1,3 @@
-/**
- * 模块说明：聊天 API 模块。作用：封装会话、消息和预约下单相关接口。
- */
 import request from "./http";
 
 type ApiWrap<T> = {
@@ -72,4 +69,3 @@ export function createBooking(conversationId: string, payload: { address: string
     .post<ApiWrap<number | string> | number | string>(`/api/chat/conversations/${conversationId}/booking`, payload)
     .then((res) => unwrapApi<number | string>(res.data));
 }
-

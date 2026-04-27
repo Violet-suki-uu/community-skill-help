@@ -1,9 +1,6 @@
-/**
- * 模块说明：HTTP 基础模块。作用：统一管理请求基地址、超时和 token 注入。
- */
 import axios from "axios";
 
-export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
+export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const request = axios.create({
   baseURL: apiBaseUrl,
@@ -30,4 +27,3 @@ request.interceptors.response.use(
 );
 
 export default request;
-

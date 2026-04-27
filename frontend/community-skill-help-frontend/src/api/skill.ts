@@ -1,6 +1,3 @@
-/**
- * 模块说明：技能 API 模块。作用：封装技能列表、详情、发布、编辑等接口调用。
- */
 import request, { apiBaseUrl } from "./http";
 
 type ApiWrap<T> = {
@@ -274,4 +271,3 @@ export function logSearchEvent(keyword: string) {
   if (!value) return Promise.resolve();
   return request.post<ApiWrap<boolean> | boolean>("/api/user-events/search", { keyword: value }).then(() => undefined);
 }
-

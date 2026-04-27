@@ -7,15 +7,12 @@
     :close-on-press-escape="false"
     width="820px"
   >
-    <!-- Header -->
     <template #header>
       <div class="dlg-header">
-        <!-- 吉祥物 -->
         <div class="mascot-wrap">
           <img src="../assets/mascot.png" alt="吉祥物" />
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
           <div
             class="tab"
@@ -33,14 +30,11 @@
           </div>
         </div>
 
-        <!-- Close -->
         <div class="close" @click="close">✕</div>
       </div>
     </template>
 
-    <!-- Body -->
     <div class="dlg-body">
-      <!-- 左侧 -->
       <div class="left">
         <div class="form-header">
           <h2 class="title">{{ mode === 'login' ? '账号登录' : '创建账号' }}</h2>
@@ -96,7 +90,6 @@
         </el-form>
       </div>
 
-      <!-- 右侧 -->
       <div class="right">
         <div class="hint">
           <div class="icon">🔧</div>
@@ -111,7 +104,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件说明：登录注册弹窗组件。作用：统一处理账号认证交互。
 import { ref, reactive, watch, computed } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
@@ -223,7 +215,6 @@ async function onSubmit() {
   }
 }
 
-// 关闭弹窗时重置表单
 watch(
   () => props.modelValue,
   (isOpen) => {
@@ -233,7 +224,6 @@ watch(
 </script>
 
 <style scoped>
-/* ================= 外层对话框 ================= */
 :deep(.auth-dialog .el-dialog) {
   width: 820px !important;
   border-radius: 24px !important;
@@ -249,7 +239,6 @@ watch(
   padding: 16px 20px !important;
 }
 
-/* ================= Header ================= */
 .dlg-header {
   position: relative;
   height: 56px;
@@ -259,7 +248,6 @@ watch(
   padding-top: 10px;
 }
 
-/* 吉祥物 - 带浮动动效 */
 .mascot-wrap {
   position: absolute;
   left: 350px;
@@ -286,7 +274,6 @@ watch(
   }
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   gap: 4px;
@@ -313,7 +300,6 @@ watch(
   transform: translateY(-1px);
 }
 
-/* Close */
 .close {
   position: absolute;
   right: 16px;
@@ -340,7 +326,6 @@ watch(
   box-shadow: 0 4px 12px rgba(22, 119, 255, 0.15);
 }
 
-/* ================= Body ================= */
 .dlg-body {
   display: flex;
   gap: 24px;
@@ -364,7 +349,6 @@ watch(
   padding: 24px 18px;
 }
 
-/* ================= Form ================= */
 .form-header {
   margin-bottom: 20px;
 }
@@ -411,7 +395,6 @@ watch(
   font-size: 13px;
 }
 
-/* ================= Footer ================= */
 .form-footer {
   margin-top: 24px;
   display: flex;
@@ -466,7 +449,6 @@ watch(
   transform: translateY(-1px);
 }
 
-/* ================= Hint ================= */
 .hint {
   text-align: center;
   color: #4a7db9;
@@ -492,7 +474,6 @@ watch(
   margin-bottom: 0;
 }
 
-/* ================= 响应式 ================= */
 @media (max-width: 900px) {
   :deep(.auth-dialog .el-dialog) {
     width: 90vw !important;
@@ -537,6 +518,140 @@ watch(
     width: 200px;
     height: 42px;
     font-size: 14px;
+  }
+}
+
+:deep(.auth-dialog .el-dialog) {
+  position: relative !important;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(34, 167, 216, 0.22), transparent 28%),
+    radial-gradient(circle at 8% 92%, rgba(255, 184, 111, 0.2), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 252, 255, 0.98) 100%) !important;
+  box-shadow:
+    0 30px 90px rgba(30, 87, 138, 0.18),
+    0 12px 36px rgba(22, 119, 255, 0.12) !important;
+  animation: auth-pop 0.42s cubic-bezier(0.18, 0.9, 0.24, 1.08) both;
+}
+
+:deep(.auth-dialog .el-dialog)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 42%, transparent 56%),
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.75), transparent 15%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  animation: auth-sheen 5.8s ease-in-out infinite;
+}
+
+.dlg-header::before,
+.dlg-header::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 999px;
+  opacity: 0.82;
+  animation: sparkle-drift 4.8s ease-in-out infinite;
+}
+
+.dlg-header::before {
+  width: 9px;
+  height: 9px;
+  right: 142px;
+  top: 12px;
+  background: #7fc8ff;
+  box-shadow:
+    -48px 24px 0 -2px rgba(255, 188, 115, 0.9),
+    36px 44px 0 -3px rgba(116, 210, 165, 0.9);
+}
+
+.dlg-header::after {
+  width: 7px;
+  height: 7px;
+  left: 96px;
+  top: 30px;
+  background: rgba(255, 188, 115, 0.95);
+  animation-delay: -1.2s;
+  box-shadow:
+    38px -18px 0 -2px rgba(111, 189, 255, 0.9),
+    86px 18px 0 -3px rgba(116, 210, 165, 0.85);
+}
+
+.right {
+  background:
+    linear-gradient(145deg, rgba(243, 250, 255, 0.92), rgba(255, 248, 239, 0.82)),
+    linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
+  border-color: rgba(203, 226, 243, 0.72);
+  position: relative;
+  overflow: hidden;
+}
+
+.right::before {
+  content: "";
+  position: absolute;
+  inset: -65% -50%;
+  background: conic-gradient(from 120deg, transparent, rgba(34, 167, 216, 0.18), transparent, rgba(255, 184, 111, 0.18), transparent);
+  animation: soft-spin 10s linear infinite;
+}
+
+.hint {
+  position: relative;
+  z-index: 1;
+}
+
+.tabs {
+  background: rgba(239, 247, 255, 0.86);
+  border-color: rgba(200, 225, 244, 0.72);
+}
+
+.tab.active,
+.auth-submit {
+  background: linear-gradient(135deg, #1677ff, #22a7d8);
+}
+
+:deep(.el-input__wrapper) {
+  background: rgba(248, 252, 255, 0.92) !important;
+}
+
+@keyframes auth-pop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes auth-sheen {
+  0%, 100% {
+    transform: translateX(-42%);
+    opacity: 0;
+  }
+  18%, 42% {
+    opacity: 0.72;
+  }
+  58% {
+    transform: translateX(42%);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkle-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(8px, -7px, 0) scale(1.15);
+  }
+}
+
+@keyframes soft-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

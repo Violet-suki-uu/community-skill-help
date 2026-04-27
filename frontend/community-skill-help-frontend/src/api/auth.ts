@@ -1,6 +1,3 @@
-/**
- * 模块说明：认证 API 模块。作用：封装注册、登录请求。
- */
 import http from "./http";
 
 export interface LoginReq {
@@ -25,4 +22,3 @@ export function registerApi(data: RegisterReq) {
 export function logoutApi() {
   return http.post("/api/auth/logout");
 }
-

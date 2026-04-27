@@ -1,6 +1,3 @@
-/**
- * 模块说明：前端启动入口。作用：初始化 Vue、路由、状态管理与 UI 组件库。
- */
 import { createApp } from "vue";
 import App from "./App.vue";
 
@@ -20,4 +17,3 @@ app.use(ElementPlus);
 preloadAmapSdk();
 
 app.mount("#app");
-

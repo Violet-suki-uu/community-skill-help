@@ -57,7 +57,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件说明：首页模块。作用：展示技能列表、推荐与附近筛选。
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
@@ -412,66 +411,134 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .page {
+  position: relative;
   min-height: 100vh;
-  background-image: url("../assets/home-bg.jpg");
+  background:
+    linear-gradient(90deg, rgba(250, 253, 255, 0.9) 0%, rgba(250, 253, 255, 0.72) 34%, rgba(250, 253, 255, 0.38) 100%),
+    url("../assets/home-bg-community.png");
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(238, 246, 255, 0.9) 100%),
+    radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.75), transparent 28%);
+  z-index: 0;
+  animation: page-light-shift 12s ease-in-out infinite alternate;
+}
+
+.page::after {
+  content: "";
+  position: fixed;
+  inset: auto 0 0;
+  height: 34vh;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(0deg, rgba(228, 243, 248, 0.82), transparent);
 }
 
 .content {
-  padding: 40px 60px;
+  position: relative;
+  z-index: 1;
+  padding: 42px 60px 64px;
   max-width: 1300px;
   margin: auto;
 }
 
 .hero {
   max-width: 720px;
-  padding: 20px 24px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(6px);
-  margin-bottom: 30px;
+  padding: 26px 30px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 70px rgba(43, 87, 126, 0.16);
+  margin-bottom: 24px;
+  animation: home-rise 0.48s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  bottom: -80px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(34, 167, 216, 0.16), transparent 64%);
+  pointer-events: none;
 }
 
 .hero h1 {
   margin: 0 0 8px 0;
-  font-size: 28px;
+  color: #16324f;
+  font-size: 34px;
+  letter-spacing: 0;
+  line-height: 1.18;
+  position: relative;
+  z-index: 1;
 }
 
 .hero p {
   margin: 0;
-  color: #555;
+  color: #526579;
+  font-size: 15px;
+  position: relative;
+  z-index: 1;
 }
 
 .category-bar {
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 18px;
   font-weight: 600;
   flex-wrap: wrap;
+  max-width: 980px;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 16px 42px rgba(43, 87, 126, 0.12);
+  animation: home-rise 0.48s ease 0.08s both;
 }
 
 .category-bar span {
   cursor: pointer;
-  transition: 0.2s;
+  padding: 9px 14px;
+  border-radius: 999px;
+  color: #48647f;
+  transition: 0.2s ease;
 }
 
 .category-bar span:hover {
-  color: #1677ff;
+  color: #0f6ed6;
+  background: rgba(15, 110, 214, 0.08);
 }
 
 .category-bar .active {
-  color: #1677ff;
+  color: #fff;
+  background: linear-gradient(135deg, #1677ff, #28a6df);
+  box-shadow: 0 8px 18px rgba(22, 119, 255, 0.22);
 }
 
 .nearby-panel,
 .recommend-panel {
   margin-bottom: 18px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #e2ebf5;
-  border-radius: 16px;
-  padding: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 20px;
+  padding: 16px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 18px 46px rgba(43, 87, 126, 0.12);
 }
 
 .nearby-title,
@@ -496,37 +563,54 @@ onBeforeUnmount(() => {
 }
 
 .market-card {
-  background: #fff;
-  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 20px;
   overflow: hidden;
-  transition: 0.25s;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 18px 46px rgba(43, 87, 126, 0.14);
   cursor: pointer;
+  backdrop-filter: blur(12px);
+  animation: card-in 0.42s ease both;
 }
 
 .market-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  border-color: rgba(22, 119, 255, 0.28);
+  box-shadow: 0 26px 64px rgba(43, 87, 126, 0.22);
+}
+
+.market-card:active {
+  transform: translateY(-2px) scale(0.99);
 }
 
 .market-card img {
   width: 100%;
   height: 200px;
   object-fit: cover;
+  display: block;
+  background: #eef5fb;
+  transition: transform 0.35s ease;
+}
+
+.market-card:hover img {
+  transform: scale(1.04);
 }
 
 .info {
-  padding: 14px;
+  padding: 15px 16px 16px;
 }
 
 .title {
   font-weight: 600;
   margin: 0 0 6px;
+  color: #1b2f45;
+  line-height: 1.35;
 }
 
 .meta {
   margin: 0 0 6px;
-  color: #888;
+  color: #71859a;
   font-size: 12px;
 }
 
@@ -546,9 +630,9 @@ onBeforeUnmount(() => {
 }
 
 .nickname-badge {
-  color: #526071;
-  background: #f5f7fb;
-  border: 1px solid #dce3ef;
+  color: #49647e;
+  background: #f6fafc;
+  border: 1px solid #dbe8f0;
   border-radius: 999px;
   padding: 2px 10px;
   font-size: 12px;
@@ -595,13 +679,98 @@ onBeforeUnmount(() => {
 }
 
 .price {
-  color: #ff5500;
+  color: #e85c2a;
   font-weight: bold;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(232, 92, 42, 0.09);
 }
 
 .recommend-more {
   margin-top: 18px;
   text-align: center;
 }
-</style>
 
+:deep(.el-empty) {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(14px);
+}
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-light-shift {
+  from {
+    opacity: 0.72;
+    transform: translate3d(-8px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(8px, -6px, 0);
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    background-attachment: scroll;
+    background-position: 58% center;
+  }
+
+  .content {
+    padding: 28px 16px 48px;
+  }
+
+  .hero {
+    padding: 22px 20px;
+    border-radius: 20px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  .category-bar {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .category-bar span {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .market-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  .market-card img {
+    height: 150px;
+  }
+}
+</style>

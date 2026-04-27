@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件说明：右侧快捷导航组件。作用：在主要页面间快速跳转。
 defineProps<{ active?: string }>();
 defineEmits(["go-add", "go-home", "go-chat"]);
 </script>
@@ -39,10 +38,10 @@ defineEmits(["go-add", "go-home", "go-chat"]);
   width: 92px;
   padding: 14px 10px;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow: 0 22px 56px rgba(43, 87, 126, 0.16);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -68,7 +67,7 @@ defineEmits(["go-add", "go-home", "go-chat"]);
   align-items: center;
   justify-content: center;
   background: rgba(22, 119, 255, 0.08);
-  border: 1px solid rgba(22, 119, 255, 0.18);
+  border: 1px solid rgba(22, 119, 255, 0.16);
   transition: 0.25s;
 }
 
@@ -79,8 +78,9 @@ defineEmits(["go-add", "go-home", "go-chat"]);
 }
 
 .item.active .circle {
-  background: #1677ff;
-  border-color: #1677ff;
+  background: linear-gradient(135deg, #1677ff, #22a7d8);
+  border-color: rgba(22, 119, 255, 0.45);
+  box-shadow: 0 10px 22px rgba(22, 119, 255, 0.25);
 }
 
 .item.active .icon {
@@ -96,13 +96,31 @@ defineEmits(["go-add", "go-home", "go-chat"]);
 
 .label {
   font-size: 12px;
-  color: #444;
-  letter-spacing: 1px;
+  color: #526579;
+  letter-spacing: 0;
 }
 
 .item.active .label {
   color: #1677ff;
   font-weight: 600;
 }
-</style>
 
+@media (max-width: 760px) {
+  .dock {
+    right: 12px;
+    width: 70px;
+    padding: 12px 8px;
+    gap: 14px;
+    border-radius: 18px;
+  }
+
+  .item {
+    width: 56px;
+  }
+
+  .circle {
+    width: 42px;
+    height: 42px;
+  }
+}
+</style>

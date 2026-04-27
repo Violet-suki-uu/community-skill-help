@@ -1,6 +1,3 @@
-/**
- * 模块说明：路由配置模块。作用：定义页面路由与登录访问守卫。
- */
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "../store/auth";
 
@@ -39,4 +36,3 @@ router.beforeEach((to) => {
 });
 
 export default router;
-

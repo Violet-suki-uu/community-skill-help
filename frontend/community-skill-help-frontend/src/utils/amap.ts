@@ -1,6 +1,3 @@
-/**
- * 模块说明：地图 SDK 工具模块。作用：按需加载高德地图脚本并缓存加载状态。
- */
 declare global {
   interface Window {
     AMap?: any;
@@ -84,5 +81,4 @@ export function preloadAmapSdk() {
   if (typeof window === "undefined") return;
   void loadAmapSdk().catch(() => undefined);
 }
-
 

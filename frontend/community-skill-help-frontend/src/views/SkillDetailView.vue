@@ -52,7 +52,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件说明：技能详情页模块。作用：展示技能细节并发起联系与预约。
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
@@ -377,4 +376,3 @@ onMounted(async () => {
   }
 }
 </style>
-

@@ -1,5 +1,6 @@
 # Node
 node_modules/
+node_modules_broken/
 dist/
 
 # Java
@@ -20,3 +21,4 @@ Thumbs.db
 # Docker / local env
 .env
 backend/backend/uploads/
+frontend/community-skill-help-frontend/community-skill-help/

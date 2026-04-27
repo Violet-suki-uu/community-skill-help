@@ -186,7 +186,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件说明：发布与管理页模块。作用：发布技能并管理技能与预约状态。
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Action, UploadProps, UploadRequestOptions } from "element-plus";
@@ -588,32 +587,130 @@ onMounted(async () => {
 
 <style scoped>
 .publish-page {
-  padding: 28px 48px 40px;
+  --surface: rgba(216, 242, 250, 0.5);
+  --surface-strong: rgba(255, 236, 212, 0.5);
+  --surface-soft: rgba(218, 246, 236, 0.46);
+  --line: rgba(116, 169, 196, 0.42);
+  --line-warm: rgba(255, 181, 116, 0.34);
+  --text-main: #17324e;
+  --text-muted: #607486;
+  position: relative;
+  min-height: 100vh;
+  padding: 34px 48px 56px;
+  max-width: none;
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    linear-gradient(135deg, rgba(228, 246, 253, 0.28), rgba(255, 246, 235, 0.38) 48%, rgba(231, 248, 239, 0.42)),
+    url("../assets/workspace-bg.png") center / cover fixed no-repeat;
+}
+
+.publish-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.3), rgba(216, 241, 249, 0.1) 42%, rgba(255, 249, 238, 0.26)),
+    radial-gradient(circle at 78% 8%, rgba(255, 174, 104, 0.26), transparent 28%),
+    radial-gradient(circle at 8% 78%, rgba(39, 180, 132, 0.16), transparent 24%);
+  animation: publish-glow 11s ease-in-out infinite alternate;
+}
+
+.publish-page > * {
+  position: relative;
+  z-index: 1;
   max-width: 1100px;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
+  padding: 18px 22px;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(246, 252, 255, 0.76), rgba(255, 248, 238, 0.68)),
+    linear-gradient(180deg, var(--surface), var(--surface-soft));
+  border: 1px solid var(--line);
+  backdrop-filter: blur(22px) saturate(1.16);
+  box-shadow:
+    0 22px 62px rgba(43, 87, 126, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.page-header h2,
+.manage-title {
+  color: var(--text-main);
+  letter-spacing: 0;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.page-header h2::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1677ff, #35b889, #ffb26b);
 }
 
 .form-card {
-  background: #fff;
-  padding: 22px 24px;
-  border-radius: 18px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(111, 203, 226, 0.2), transparent 34%),
+    radial-gradient(circle at 92% 16%, rgba(255, 176, 103, 0.18), transparent 30%),
+    linear-gradient(135deg, rgba(219, 243, 250, 0.58), rgba(255, 239, 218, 0.44) 54%, rgba(218, 246, 236, 0.52)),
+    var(--surface);
+  padding: 24px;
+  border-radius: 22px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  gap: 14px;
+  box-shadow:
+    0 28px 80px rgba(43, 87, 126, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(112, 169, 198, 0.46);
+  backdrop-filter: blur(26px) saturate(1.24);
+  animation: rise-in 0.45s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.form-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.2), transparent 34%, rgba(255, 182, 118, 0.16) 70%, transparent),
+    radial-gradient(circle at 92% 0%, rgba(34, 167, 216, 0.22), transparent 22%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 12px);
+  opacity: 0.9;
+}
+
+.form-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .back-btn {
   border-radius: 999px;
   padding: 0 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-3px);
+  box-shadow: 0 10px 22px rgba(43, 87, 126, 0.14);
 }
 
 .upload-row {
@@ -623,10 +720,21 @@ onMounted(async () => {
 }
 
 .location-field {
-  border: 1px solid #e3ebf5;
-  border-radius: 14px;
-  padding: 12px;
-  background: #f9fbff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(57, 173, 215, 0.14), transparent 34%),
+    linear-gradient(135deg, rgba(224, 246, 252, 0.58), rgba(255, 240, 219, 0.4)),
+    rgba(220, 246, 236, 0.3);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  backdrop-filter: blur(16px);
+}
+
+.location-field:hover {
+  transform: translateY(-2px);
+  border-color: rgba(22, 119, 255, 0.28);
+  box-shadow: 0 16px 34px rgba(43, 87, 126, 0.12);
 }
 
 .location-title {
@@ -663,17 +771,33 @@ onMounted(async () => {
   width: 180px;
   height: 130px;
   object-fit: cover;
-  border-radius: 12px;
-  border: 1px solid #eee;
+  border-radius: 16px;
+  border: 1px solid rgba(210, 228, 240, 0.95);
+  box-shadow: 0 12px 28px rgba(43, 87, 126, 0.14);
 }
 
 .submit-btn {
-  height: 42px;
-  border-radius: 12px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1677ff, #22a7d8);
+  border: none;
+  box-shadow: 0 14px 28px rgba(22, 119, 255, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(22, 119, 255, 0.3);
+}
+
+.submit-btn:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .manage-title {
-  margin-top: 28px;
+  margin-top: 32px;
+  padding-left: 12px;
+  border-left: 5px solid #22a7d8;
 }
 
 .sub-title {
@@ -687,6 +811,12 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(246, 252, 255, 0.72), rgba(255, 249, 239, 0.6));
+  border: 1px solid var(--line);
+  backdrop-filter: blur(18px) saturate(1.12);
+  width: fit-content;
 }
 
 .refresh-btn {
@@ -701,20 +831,39 @@ onMounted(async () => {
 }
 
 .manage-card {
-  background: #fff;
-  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(248, 253, 255, 0.76), rgba(255, 249, 240, 0.62)),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 18px 46px rgba(43, 87, 126, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  backdrop-filter: blur(16px);
+}
+
+.manage-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 64px rgba(43, 87, 126, 0.2);
+}
+
+.manage-card:active,
+.reservation-card:active {
+  transform: translateY(-1px) scale(0.995);
 }
 
 .manage-card img {
   width: 100%;
   height: 180px;
   object-fit: cover;
+  background: #eef5fb;
 }
 
 .manage-card .info {
   padding: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(235, 249, 244, 0.24));
 }
 
 .title {
@@ -737,6 +886,7 @@ onMounted(async () => {
   justify-content: space-around;
   padding: 10px;
   gap: 6px;
+  border-top: 1px solid rgba(226, 236, 245, 0.9);
 }
 
 .edit-form {
@@ -753,11 +903,22 @@ onMounted(async () => {
 }
 
 .reservation-card {
-  background: #fff;
-  border: 1px solid #e4ebf5;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 6px 18px rgba(25, 50, 90, 0.08);
+  background:
+    linear-gradient(135deg, rgba(247, 253, 255, 0.76), rgba(239, 250, 245, 0.62) 52%, rgba(255, 248, 239, 0.66)),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow:
+    0 16px 42px rgba(43, 87, 126, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(18px) saturate(1.16);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 56px rgba(43, 87, 126, 0.18);
 }
 
 .reservation-card.history {
@@ -838,5 +999,81 @@ onMounted(async () => {
   color: #42596f;
   font-size: 14px;
 }
-</style>
 
+:deep(.el-input__wrapper),
+:deep(.el-textarea__inner) {
+  border-radius: 14px !important;
+  background:
+    linear-gradient(135deg, rgba(226, 246, 252, 0.72), rgba(255, 242, 224, 0.54)),
+    rgba(224, 246, 236, 0.34) !important;
+  box-shadow:
+    0 0 0 1px rgba(36, 114, 196, 0.14) inset,
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(14px);
+}
+
+:deep(.el-input-group__append) {
+  background: rgba(232, 246, 247, 0.58) !important;
+  border-color: rgba(126, 177, 201, 0.38) !important;
+}
+
+:deep(.el-input__count) {
+  background: transparent !important;
+  color: #73889a !important;
+}
+
+:deep(.el-input__wrapper.is-focus),
+:deep(.el-textarea__inner:focus) {
+  box-shadow: 0 0 0 1px rgba(22, 119, 255, 0.38) inset, 0 0 0 3px rgba(22, 119, 255, 0.1) !important;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes publish-glow {
+  from {
+    opacity: 0.62;
+    transform: translate3d(-10px, 0, 0);
+  }
+  to {
+    opacity: 0.96;
+    transform: translate3d(10px, -8px, 0);
+  }
+}
+
+@media (max-width: 760px) {
+  .publish-page {
+    padding: 20px 14px 36px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .form-card {
+    padding: 18px;
+  }
+
+  .upload-row,
+  .filter-bar,
+  .reservation-foot {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .manage-grid,
+  .reservation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

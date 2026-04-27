@@ -36,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-// 组件说明：地图选点组件。作用：完成地址搜索、地图点选与定位。
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { loadAmapSdk } from "../utils/amap";
@@ -602,9 +601,21 @@ onBeforeUnmount(() => {
   left: 0;
   right: 0;
   top: calc(100% + 8px);
-  border-radius: 12px;
-  border: 1px solid #dbe5f1;
+  border-radius: 18px;
+  border: 1px solid rgba(116, 169, 196, 0.4);
   z-index: 20;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(62, 177, 215, 0.12), transparent 32%),
+    linear-gradient(135deg, rgba(226, 246, 252, 0.9), rgba(255, 240, 219, 0.82) 55%, rgba(221, 247, 238, 0.88));
+  box-shadow:
+    0 22px 54px rgba(43, 87, 126, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(18px) saturate(1.16);
+}
+
+.suggestion-panel :deep(.el-card__body) {
+  background: transparent;
 }
 
 .suggestion-head {
@@ -622,16 +633,18 @@ onBeforeUnmount(() => {
 
 .suggestion-item {
   border: none;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.26);
   text-align: left;
   padding: 8px 10px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .suggestion-item:hover {
-  background: #f3f7ff;
+  background: rgba(255, 255, 255, 0.54);
+  box-shadow: 0 10px 24px rgba(43, 87, 126, 0.1);
+  transform: translateX(3px);
 }
 
 .suggestion-item .name {
@@ -654,9 +667,12 @@ onBeforeUnmount(() => {
 
 .map {
   width: 100%;
-  border-radius: 14px;
-  border: 1px solid #dbe5f1;
+  border-radius: 18px;
+  border: 1px solid rgba(116, 169, 196, 0.42);
   overflow: hidden;
+  box-shadow:
+    0 18px 42px rgba(43, 87, 126, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .footer {
@@ -676,4 +692,3 @@ onBeforeUnmount(() => {
   }
 }
 </style>
-

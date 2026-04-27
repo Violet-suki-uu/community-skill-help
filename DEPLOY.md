@@ -6,8 +6,8 @@
 |---|---|---|---|
 | `mysql` | `mysql:8.0` | 持久化数据 | 3306 |
 | `redis` | `redis:7-alpine` | 缓存 / Token 黑名单 / 登录限流 / 浏览量计数 | 6379 |
-| `backend` | 由 `backend/backend/Dockerfile` 构建 | Spring Boot API | 8081 |
-| `frontend` | 由 `frontend/community-skill-help-frontend/Dockerfile` 构建 | Nginx 托管前端，反向代理 `/api` `/uploads` | 80 |
+| `backend` | 由 `backend/backend/Dockerfile` 构建 | Spring Boot API | 仅容器内暴露 8081 |
+| `frontend` | 由 `frontend/community-skill-help-frontend/Dockerfile` 构建 | Nginx 托管前端，反向代理 `/api` `/uploads` | 8080 |
 
 ---
 
@@ -34,10 +34,10 @@ docker compose logs -f backend
 
 启动完成后访问：
 
-- 前端：<http://localhost> （由 `FRONTEND_PORT` 控制）
-- 后端（直连）：<http://localhost:8081/ping>
+- 前端：<http://localhost:8080> （由 `FRONTEND_PORT` 控制）
+- 后端健康检查：<http://localhost:8080/api/ping>（经前端 Nginx 代理）
 
-前端的所有 `/api/*` 请求会由 Nginx 反向代理到 `backend:8081`，无需在浏览器侧访问 8081 端口。
+前端的所有 `/api/*` 请求会由 Nginx 反向代理到 `backend:8081`，浏览器侧只需要访问前端端口。
 
 ## 3. 目录与数据卷
 

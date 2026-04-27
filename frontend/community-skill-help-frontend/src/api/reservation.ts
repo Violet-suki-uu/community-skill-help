@@ -1,6 +1,3 @@
-/**
- * 模块说明：预约 API 模块。作用：封装预约查询、取消、完成和确认接口。
- */
 import request from "./http";
 
 type ApiWrap<T> = {
@@ -91,4 +88,3 @@ export function confirmReservation(reservationId: string | number, payload: { ra
     .patch<ApiWrap<boolean> | boolean>(`/api/reservations/${reservationId}/confirm`, payload)
     .then((res) => unwrapApi<boolean>(res.data));
 }
-
