@@ -9,14 +9,14 @@
 
     <div class="item" :class="{ active: active === 'chat' }" @click="$emit('go-chat')">
       <div class="circle">
-        <span class="icon">M</span>
+        <span class="icon">•••</span>
       </div>
       <div class="label">消息</div>
     </div>
 
     <div class="item" :class="{ active: active === 'home' }" @click="$emit('go-home')">
       <div class="circle">
-        <span class="icon">H</span>
+        <span class="icon">⌂</span>
       </div>
       <div class="label">首页</div>
     </div>
@@ -35,16 +35,16 @@ defineEmits(["go-add", "go-home", "go-chat"]);
   top: 50%;
   transform: translateY(-50%);
   z-index: 50;
-  width: 92px;
-  padding: 14px 10px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.82);
+  width: 86px;
+  padding: 16px 10px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow: 0 22px 56px rgba(43, 87, 126, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 22px 56px rgba(36, 55, 85, 0.14);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
   align-items: center;
 }
 
@@ -66,21 +66,21 @@ defineEmits(["go-add", "go-home", "go-chat"]);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(22, 119, 255, 0.08);
-  border: 1px solid rgba(22, 119, 255, 0.16);
+  background: #fff;
+  border: 2px solid rgba(59, 121, 255, 0.24);
   transition: 0.25s;
 }
 
 .item:hover .circle {
-  background: rgba(22, 119, 255, 0.16);
-  border-color: rgba(22, 119, 255, 0.35);
+  background: rgba(59, 121, 255, 0.08);
+  border-color: rgba(59, 121, 255, 0.45);
   transform: translateY(-2px);
 }
 
 .item.active .circle {
-  background: linear-gradient(135deg, #1677ff, #22a7d8);
-  border-color: rgba(22, 119, 255, 0.45);
-  box-shadow: 0 10px 22px rgba(22, 119, 255, 0.25);
+  background: linear-gradient(135deg, #3b79ff, #2567ee);
+  border-color: rgba(59, 121, 255, 0.45);
+  box-shadow: 0 10px 22px rgba(37, 103, 238, 0.25);
 }
 
 .item.active .icon {
@@ -90,18 +90,18 @@ defineEmits(["go-add", "go-home", "go-chat"]);
 .icon {
   font-weight: 900;
   font-size: 18px;
-  color: #1677ff;
+  color: #3b79ff;
   transition: 0.2s;
 }
 
 .label {
   font-size: 12px;
-  color: #526579;
+  color: #34445c;
   letter-spacing: 0;
 }
 
 .item.active .label {
-  color: #1677ff;
+  color: #2567ee;
   font-weight: 600;
 }
 

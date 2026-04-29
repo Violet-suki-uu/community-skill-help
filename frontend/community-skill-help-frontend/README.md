@@ -1,4 +1,4 @@
-# 邻光前端
+# 小油条前端
 
 Vue 3 + TypeScript + Vite 前端项目，生产环境由 Nginx 托管静态资源，并把 `/api`、`/uploads` 代理到后端容器。
 

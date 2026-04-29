@@ -9,7 +9,7 @@
     <div class="content">
       <div class="hero">
         <h1>社区技能广场</h1>
-        <p>发现身边技能与服务，快速联系，安心选择。</p>
+        <p>发现身边技能与服务，快速联系，安心选择</p>
       </div>
 
       <div class="category-bar">
@@ -37,12 +37,44 @@
           <div class="info">
             <p class="title">{{ item.title }}</p>
             <p class="meta">{{ displayCategory(item.category) }}</p>
+            <p class="desc">{{ item.description || "专业服务，响应及时，沟通透明" }}</p>
             <p v-if="current === NEARBY_CATEGORY && hasDistance(item)" class="distance">距离 {{ formatDistance(item.distanceKm) }}</p>
             <div class="tag-row">
               <span class="nickname-badge">{{ item.sellerNickname || "用户" }}</span>
-              <span class="credit-badge" :class="creditClass(item.sellerCreditScore)">信用：{{ displayScore(item.sellerCreditScore) }}</span>
+              <span class="credit-badge" :class="creditClass(item.sellerCreditScore)">★ {{ displayScore(item.sellerCreditScore) }}</span>
             </div>
-            <span class="price">售价 ¥{{ item.price }}</span>
+            <span class="price">¥{{ item.price }} <small>起</small></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="trust-strip">
+        <div class="trust-item">
+          <span class="trust-icon">✓</span>
+          <div>
+            <strong>真实可靠</strong>
+            <p>实名认证，放心选择</p>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">⌖</span>
+          <div>
+            <strong>就在身边</strong>
+            <p>同城服务，快速响应</p>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">☆</span>
+          <div>
+            <strong>评价透明</strong>
+            <p>真实评分，安心参考</p>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon heart">♡</span>
+          <div>
+            <strong>互帮互助</strong>
+            <p>温暖社区，共建美好</p>
           </div>
         </div>
       </div>
@@ -414,7 +446,7 @@ onBeforeUnmount(() => {
   position: relative;
   min-height: 100vh;
   background:
-    linear-gradient(90deg, rgba(250, 253, 255, 0.9) 0%, rgba(250, 253, 255, 0.72) 34%, rgba(250, 253, 255, 0.38) 100%),
+    linear-gradient(90deg, rgba(255, 248, 239, 0.66) 0%, rgba(255, 255, 255, 0.48) 42%, rgba(255, 242, 226, 0.28) 100%),
     url("../assets/home-bg-community.png");
   background-size: cover;
   background-position: center;
@@ -428,10 +460,9 @@ onBeforeUnmount(() => {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(238, 246, 255, 0.9) 100%),
-    radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.75), transparent 28%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 249, 240, 0.68) 100%),
+    radial-gradient(circle at 15% 62%, rgba(255, 255, 255, 0.6), transparent 18%);
   z-index: 0;
-  animation: page-light-shift 12s ease-in-out infinite alternate;
 }
 
 .page::after {
@@ -441,56 +472,59 @@ onBeforeUnmount(() => {
   height: 34vh;
   pointer-events: none;
   z-index: 0;
-  background: linear-gradient(0deg, rgba(228, 243, 248, 0.82), transparent);
+  background: linear-gradient(0deg, rgba(255, 246, 234, 0.7), transparent);
 }
 
 .content {
   position: relative;
   z-index: 1;
-  padding: 42px 60px 64px;
-  max-width: 1300px;
+  padding: 48px 24px 64px;
+  max-width: 980px;
   margin: auto;
 }
 
 .hero {
-  max-width: 720px;
-  padding: 26px 30px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.78);
+  min-height: 190px;
+  padding: 44px 40px;
+  margin-bottom: 20px;
+  border-radius: 22px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.74) 48%, rgba(255, 255, 255, 0.28) 100%),
+    url("../assets/workspace-bg.png");
+  background-size: cover;
+  background-position: center right;
   border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 18px 46px rgba(36, 55, 85, 0.13);
   backdrop-filter: blur(18px);
-  box-shadow: 0 24px 70px rgba(43, 87, 126, 0.16);
-  margin-bottom: 24px;
   animation: home-rise 0.48s ease both;
   position: relative;
   overflow: hidden;
 }
 
-.hero::after {
+.hero::before {
   content: "";
   position: absolute;
-  right: -60px;
-  bottom: -80px;
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, rgba(34, 167, 216, 0.16), transparent 64%);
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent 58%);
   pointer-events: none;
 }
 
 .hero h1 {
-  margin: 0 0 8px 0;
-  color: #16324f;
-  font-size: 34px;
+  margin: 0 0 14px;
+  color: #14243d;
+  font-size: 40px;
+  font-weight: 800;
   letter-spacing: 0;
-  line-height: 1.18;
+  line-height: 1.12;
   position: relative;
   z-index: 1;
 }
 
 .hero p {
   margin: 0;
-  color: #526579;
-  font-size: 15px;
+  color: #657189;
+  font-size: 16px;
+  font-weight: 500;
   position: relative;
   z-index: 1;
 }
@@ -498,36 +532,36 @@ onBeforeUnmount(() => {
 .category-bar {
   display: flex;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   font-weight: 600;
   flex-wrap: wrap;
-  max-width: 980px;
-  padding: 10px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 16px 42px rgba(43, 87, 126, 0.12);
+  padding: 10px 12px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 38px rgba(36, 55, 85, 0.1);
   animation: home-rise 0.48s ease 0.08s both;
 }
 
 .category-bar span {
   cursor: pointer;
-  padding: 9px 14px;
+  padding: 11px 24px;
   border-radius: 999px;
-  color: #48647f;
-  transition: 0.2s ease;
+  color: #526075;
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .category-bar span:hover {
-  color: #0f6ed6;
-  background: rgba(15, 110, 214, 0.08);
+  color: #2f6df6;
+  background: rgba(47, 109, 246, 0.08);
+  transform: translateY(-2px);
 }
 
 .category-bar .active {
   color: #fff;
-  background: linear-gradient(135deg, #1677ff, #28a6df);
-  box-shadow: 0 8px 18px rgba(22, 119, 255, 0.22);
+  background: linear-gradient(135deg, #3b79ff, #2567ee);
+  box-shadow: 0 10px 22px rgba(37, 103, 238, 0.25);
 }
 
 .nearby-panel,
@@ -538,7 +572,7 @@ onBeforeUnmount(() => {
   border-radius: 20px;
   padding: 16px;
   backdrop-filter: blur(16px);
-  box-shadow: 0 18px 46px rgba(43, 87, 126, 0.12);
+  box-shadow: 0 18px 46px rgba(63, 135, 130, 0.11);
 }
 
 .nearby-title,
@@ -558,26 +592,32 @@ onBeforeUnmount(() => {
 
 .market-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .market-card {
-  background: rgba(255, 255, 255, 0.92);
+  min-height: 170px;
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid rgba(255, 255, 255, 0.82);
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  box-shadow: 0 18px 46px rgba(43, 87, 126, 0.14);
+  box-shadow: 0 16px 38px rgba(36, 55, 85, 0.11);
   cursor: pointer;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   animation: card-in 0.42s ease both;
 }
 
 .market-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(22, 119, 255, 0.28);
-  box-shadow: 0 26px 64px rgba(43, 87, 126, 0.22);
+  transform: translateY(-5px);
+  border-color: rgba(47, 109, 246, 0.22);
+  box-shadow: 0 24px 56px rgba(36, 55, 85, 0.17);
 }
 
 .market-card:active {
@@ -586,37 +626,48 @@ onBeforeUnmount(() => {
 
 .market-card img {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: 104px;
+  object-fit: contain;
   display: block;
-  background: #eef5fb;
+  background: transparent;
   transition: transform 0.35s ease;
 }
 
 .market-card:hover img {
-  transform: scale(1.04);
+  transform: scale(1.045);
 }
 
 .info {
-  padding: 15px 16px 16px;
+  min-width: 0;
+  padding: 0;
 }
 
 .title {
-  font-weight: 600;
-  margin: 0 0 6px;
-  color: #1b2f45;
-  line-height: 1.35;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: #1d2c44;
+  line-height: 1.32;
+  font-size: 17px;
 }
 
 .meta {
-  margin: 0 0 6px;
-  color: #71859a;
+  display: none;
+}
+
+.desc {
+  margin: 0 0 10px;
+  color: #6d788d;
   font-size: 12px;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .distance {
   margin: 0 0 8px;
-  color: #1661d6;
+  color: #2567ee;
   font-size: 12px;
   font-weight: 700;
 }
@@ -624,30 +675,30 @@ onBeforeUnmount(() => {
 .tag-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
 }
 
 .nickname-badge {
-  color: #49647e;
-  background: #f6fafc;
-  border: 1px solid #dbe8f0;
-  border-radius: 999px;
-  padding: 2px 10px;
+  color: #606d80;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.3;
-  max-width: 120px;
+  max-width: 92px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .credit-badge {
-  border: 1px solid;
-  border-radius: 999px;
-  padding: 2px 8px;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   font-size: 12px;
   font-weight: 700;
   line-height: 1.3;
@@ -655,38 +706,94 @@ onBeforeUnmount(() => {
 }
 
 .credit-green {
-  color: #1f8f46;
-  border-color: #66c18a;
-  background: #edf9f0;
+  color: #f2a30b;
+  background: transparent;
 }
 
 .credit-blue {
-  color: #1661d6;
-  border-color: #77a6f2;
-  background: #eef4ff;
+  color: #f2a30b;
+  background: transparent;
 }
 
 .credit-yellow {
-  color: #9a6b00;
-  border-color: #efc255;
-  background: #fff9e8;
+  color: #f2a30b;
+  background: transparent;
 }
 
 .credit-red {
-  color: #c73636;
-  border-color: #f08b8b;
-  background: #fff1f1;
+  color: #f2a30b;
+  background: transparent;
 }
 
 .price {
-  color: #e85c2a;
+  color: #ff7a1a;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 17px;
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
+  gap: 4px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.price small {
+  color: #8a93a5;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.trust-strip {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding: 22px 28px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 16px 40px rgba(36, 55, 85, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.trust-icon {
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
-  background: rgba(232, 92, 42, 0.09);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: #3b79ff;
+  border: 2px solid rgba(59, 121, 255, 0.78);
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.trust-icon.heart {
+  color: #ff8f77;
+  border-color: rgba(255, 143, 119, 0.78);
+}
+
+.trust-item strong {
+  display: block;
+  color: #26364e;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.trust-item p {
+  margin: 0;
+  color: #788397;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .recommend-more {
@@ -723,34 +830,29 @@ onBeforeUnmount(() => {
   }
 }
 
-@keyframes page-light-shift {
-  from {
-    opacity: 0.72;
-    transform: translate3d(-8px, 0, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(8px, -6px, 0);
-  }
-}
-
 @media (max-width: 760px) {
   .page {
     background-attachment: scroll;
-    background-position: 58% center;
+    background-position: center;
   }
 
   .content {
-    padding: 28px 16px 48px;
+    padding: 24px 14px 44px;
   }
 
   .hero {
-    padding: 22px 20px;
-    border-radius: 20px;
+    min-height: 150px;
+    padding: 28px 22px;
+    border-radius: 18px;
+    background-position: 64% center;
   }
 
   .hero h1 {
-    font-size: 26px;
+    font-size: 28px;
+  }
+
+  .hero p {
+    font-size: 14px;
   }
 
   .category-bar {
@@ -765,12 +867,28 @@ onBeforeUnmount(() => {
   }
 
   .market-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: 1fr;
     gap: 14px;
   }
 
+  .market-card {
+    grid-template-columns: 106px minmax(0, 1fr);
+    min-height: 150px;
+    padding: 16px;
+  }
+
   .market-card img {
-    height: 150px;
+    height: 96px;
+  }
+
+  .trust-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .trust-item {
+    align-items: flex-start;
   }
 }
 </style>
