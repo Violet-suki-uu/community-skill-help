@@ -161,7 +161,7 @@ function unwrapOne<T>(payload: ApiWrap<T> | T): T {
   return payload as T;
 }
 
-export function getSkillList(params?: { keyword?: string; category?: string }) {
+export function getSkillList(params?: { keyword?: string; category?: string; page?: number; size?: number }) {
   return request
     .get<ApiWrap<BackendSkillItem[] | Paged<BackendSkillItem>> | BackendSkillItem[]>("/api/skills", { params })
     .then((res) => unwrapList<BackendSkillItem>(res.data).map(normalizeSkill));

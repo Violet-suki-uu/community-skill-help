@@ -209,14 +209,14 @@ function isNearbyApiUnsupported(error: any) {
 }
 
 async function loadNearbyByClientDistance() {
-  const base = await getSkillList();
+  const base = await getSkillList({ page: 1, size: 300 });
   nearbyList.value = toNearbyResult(patchDistance(base, nearbyLocation.value));
 }
 
 async function loadList() {
   try {
     listLoading.value = true;
-    list.value = await getSkillList();
+    list.value = await getSkillList({ page: 1, size: 300 });
   } catch (error: any) {
     ElMessage.error(error?.response?.data?.message || error?.message || "加载技能列表失败");
   } finally {
