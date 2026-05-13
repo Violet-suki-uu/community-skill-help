@@ -3,6 +3,7 @@ node_modules/
 node_modules_broken/
 dist/
 seed-logs/
+scripts/demo-assets/category-covers/
 
 # Java
 target/

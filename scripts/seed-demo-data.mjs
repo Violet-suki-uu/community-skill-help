@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const DEFAULT_BASE_URL = "https://lizonghui.asia";
 const DEFAULT_ITEMS_PER_CATEGORY = 20;
@@ -10,8 +11,20 @@ const PASSWORD = "Demo@20260514";
 const args = parseArgs(process.argv.slice(2));
 const baseUrl = normalizeBaseUrl(args.baseUrl || process.env.SEED_API_BASE_URL || DEFAULT_BASE_URL);
 const itemsPerCategory = Number(args.count || process.env.SEED_ITEMS_PER_CATEGORY || DEFAULT_ITEMS_PER_CATEGORY);
+const resetRequested = Boolean(args.reset || process.env.SEED_RESET === "true");
 const runId = new Date().toISOString().replace(/[:.]/g, "-");
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const logDir = path.resolve(process.cwd(), "seed-logs");
+const coverDir = path.join(scriptDir, "demo-assets", "category-covers-small");
+const coverAssetsByPhone = {
+  "13926050101": "tutoring.jpg",
+  "13926050102": "repair.jpg",
+  "13926050103": "design.jpg",
+  "13926050104": "photography.jpg",
+  "13926050105": "programming.jpg",
+  "13926050106": "errand.jpg",
+  "13926050107": "general.jpg",
+};
 
 const categories = [
   {
@@ -253,8 +266,10 @@ async function main() {
     runId,
     startedAt: new Date().toISOString(),
     itemsPerCategory,
+    resetRequested,
     accounts: [],
     uploads: [],
+    deletedSkills: [],
     createdSkills: [],
     skippedSkills: [],
     failures: [],
@@ -272,12 +287,21 @@ async function main() {
 
     await registerIfNeeded(account, summary);
     const token = await login(account);
+    const mine = await getMySkills(token);
+
+    if (resetRequested) {
+      const deleted = await deleteDemoSkills(token, mine, profile, summary);
+      if (deleted > 0) {
+        console.log(`[${profile.category}] 已清理旧演示技能 ${deleted} 条`);
+      }
+    }
+
     const imageUrl = await uploadCategoryImage(profile, token);
     summary.uploads.push({ category: profile.category, imageUrl });
 
-    const mine = await getMySkills(token);
+    const currentMine = resetRequested ? [] : mine;
     const existingTitles = new Set(
-      mine
+      currentMine
         .filter((item) => item.category === profile.category)
         .map((item) => String(item.title || "").trim())
         .filter(Boolean),
@@ -381,10 +405,34 @@ async function createSkill(token, skill) {
   return response.data;
 }
 
+async function deleteDemoSkills(token, skills, profile, summary) {
+  const targets = skills.filter((item) => item.category === profile.category);
+  let deleted = 0;
+  for (const item of targets) {
+    try {
+      const response = await request(`/api/skills/${item.id}`, {
+        method: "DELETE",
+        headers: authHeaders(token),
+      });
+      assertOk(response, `删除失败：${item.title || item.id}`);
+      deleted += 1;
+      summary.deletedSkills.push({ id: item.id, category: item.category, title: item.title, phone: profile.phone });
+    } catch (error) {
+      summary.failures.push({
+        category: profile.category,
+        title: item.title,
+        message: `delete failed: ${error.message}`,
+      });
+      throw error;
+    }
+  }
+  return deleted;
+}
+
 async function uploadCategoryImage(profile, token) {
-  const svg = buildCoverSvg(profile);
   const form = new FormData();
-  form.append("file", new Blob([svg], { type: "image/svg+xml" }), `${profile.category}.svg`);
+  const asset = await loadCoverAsset(profile);
+  form.append("file", asset.blob, asset.filename);
   const response = await request("/api/upload/image", {
     method: "POST",
     headers: authHeaders(token),
@@ -397,6 +445,27 @@ async function uploadCategoryImage(profile, token) {
   }
   console.log(`[${profile.category}] 图片已上传 ${response.data}`);
   return toAbsoluteImageUrl(response.data);
+}
+
+async function loadCoverAsset(profile) {
+  const filename = coverAssetsByPhone[profile.phone];
+  if (filename) {
+    try {
+      const buffer = await readFile(path.join(coverDir, filename));
+      return {
+        filename,
+        blob: new Blob([buffer], { type: filename.endsWith(".jpg") ? "image/jpeg" : "image/png" }),
+      };
+    } catch (error) {
+      console.warn(`[${profile.category}] PNG 封面读取失败，改用 SVG 兜底：${error.message}`);
+    }
+  }
+
+  const svg = buildCoverSvg(profile);
+  return {
+    filename: `${profile.category}.svg`,
+    blob: new Blob([svg], { type: "image/svg+xml" }),
+  };
 }
 
 function buildCoverSvg(profile) {
@@ -553,6 +622,7 @@ function parseArgs(argv) {
     const arg = argv[index];
     if (arg === "--base-url") parsed.baseUrl = argv[++index];
     if (arg === "--count") parsed.count = argv[++index];
+    if (arg === "--reset") parsed.reset = true;
   }
   return parsed;
 }

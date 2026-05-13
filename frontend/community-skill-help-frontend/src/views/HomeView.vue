@@ -111,6 +111,7 @@ const ALL_CATEGORY = "全部";
 const RECOMMEND_CATEGORY = "推荐";
 const NEARBY_CATEGORY = "附近";
 const NEARBY_RADIUS_KM = 5;
+const NEARBY_MIN_RESULTS = 20;
 const ENABLE_NEARBY_API = String(import.meta.env.VITE_ENABLE_NEARBY_API || "false").toLowerCase() === "true";
 
 const categories = [ALL_CATEGORY, RECOMMEND_CATEGORY, "家教", "维修", "设计", "摄影", "编程", "跑腿", "其他", NEARBY_CATEGORY] as const;
@@ -196,9 +197,17 @@ function patchDistance(items: SkillItem[], location: LocationPayload | null) {
 }
 
 function toNearbyResult(items: SkillItem[]) {
-  return items
+  const sorted = items
     .filter((item) => typeof item.distanceKm === "number" && Number.isFinite(item.distanceKm) && item.distanceKm <= NEARBY_RADIUS_KM)
     .sort((a, b) => Number(a.distanceKm || 0) - Number(b.distanceKm || 0));
+  if (sorted.length >= NEARBY_MIN_RESULTS) return sorted;
+
+  const exists = new Set(sorted.map((item) => String(item.id)));
+  const nearest = items
+    .filter((item) => typeof item.distanceKm === "number" && Number.isFinite(item.distanceKm) && !exists.has(String(item.id)))
+    .sort((a, b) => Number(a.distanceKm || 0) - Number(b.distanceKm || 0))
+    .slice(0, NEARBY_MIN_RESULTS - sorted.length);
+  return [...sorted, ...nearest];
 }
 
 function isNearbyApiUnsupported(error: any) {
